@@ -4,7 +4,7 @@ from latex.latex_convertable import LatexConvertable
 from matrix.matrix import Matrix
 from termcolor import cprint
 
-class MatrixCmd(Cmd):
+class MatrixShell(Cmd):
     prompt = "matrixsh> "
     intro = \
     "Welcome to the Matrix Shell!\n" \
@@ -65,9 +65,9 @@ class MatrixCmd(Cmd):
         :returns: True if len(args) == count, prints an error and returns False otherwise
 
         """
-        if not MatrixCmd.lower_count_check(args, count, message):
+        if not MatrixShell.lower_count_check(args, count, message):
             return False
-        if not MatrixCmd.upper_count_check(args, count, message):
+        if not MatrixShell.upper_count_check(args, count, message):
             return False
         return True
 
@@ -98,14 +98,14 @@ class MatrixCmd(Cmd):
 
     def do_read(self, line):
         inp = line.split()
-        if not MatrixCmd.count_check(inp, 2):
+        if not MatrixShell.count_check(inp, 2):
             return
         name = inp[0].strip()
         if not name.isidentifier():
             cprint("The variable name must be a valid identifier", "red")
             return
         shape = inp[1].split('x')
-        if not MatrixCmd.count_check(shape, 2, "Shape string must fit the format AxB"):
+        if not MatrixShell.count_check(shape, 2, "Shape string must fit the format AxB"):
             return
         if not (shape[0].isdigit() and shape[1].isdigit()):
             cprint("Non-integers found", "red")
@@ -123,7 +123,7 @@ class MatrixCmd(Cmd):
         )
 
     def do_latex(self, name):
-        if not MatrixCmd.count_check(name.split(), 1):
+        if not MatrixShell.count_check(name.split(), 1):
             return
         print(self.matrices[name].to_latex())
     def help_latex(self):
@@ -134,4 +134,4 @@ class MatrixCmd(Cmd):
         )
 
 if __name__ == '__main__':
-    MatrixCmd().cmdloop()
+    MatrixShell().cmdloop()
