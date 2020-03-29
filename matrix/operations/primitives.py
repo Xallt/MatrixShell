@@ -12,8 +12,8 @@ class MultiplyRow(MatrixOperation):
 
     def apply(self, matrix):
         matrix[self.row] *= self.koefficient
-    def __str__(self):
-        return r"E_{(%s) \to (%s \cdot %s)}" % (self.row, self.row, self.koefficient)
+    def to_latex(self):
+        return r"(%s) \to %s\cdot(%s)" % (self.row + 1, self.koefficient, self.row + 1)
 
 class SwapRows(MatrixOperation):
 
@@ -25,8 +25,8 @@ class SwapRows(MatrixOperation):
 
     def apply(self, matrix):
         matrix[[self.row1, self.row2]] = matrix[[self.row2, self.row1]]
-    def __str__(self):
-        return r"E_{(%s) \leftrightarrow (%s)}" % (self.row1, self.row2)
+    def to_latex(self):
+        return r"(%s) \leftrightarrow (%s)" % (self.row1 + 1, self.row2 + 1)
 
 class AddRowToRow(MatrixOperation):
 
@@ -40,5 +40,5 @@ class AddRowToRow(MatrixOperation):
 
     def apply(self, matrix):
         matrix[self.row2] += matrix[self.row1] * self.koefficient
-    def __str__(self):
-        return r"E_{(%s) \to (%s) + %s(%s)}" % (self.row2, self.row2, self.koefficient, self.row1)
+    def to_latex(self):
+        return r"(%s) \to (%s) + %s\cdot(%s)" % (self.row2 + 1, self.row2 + 1, self.koefficient, self.row1 + 1)
