@@ -19,6 +19,17 @@ class Matrix(LatexConvertable):
         """ Apply a MatrixOperation """
         operation.apply(self)
 
-        
-
-        
+    def to_latex(self):
+        wrap = "\\begin{{pmatrix}}\n{}\\end{{pmatrix}}"
+        lines = []
+        for row in self.array:
+            line = ""
+            for i in range(len(row)):
+                if i == 0:
+                    line += str(row[i])
+                else:
+                    # if i >= cols:
+                        # line += "&\\aug"
+                    line += "&" + str(row[i])
+            lines.append(line)
+        return wrap.format('\\\\\n'.join(lines) + '\n')
