@@ -6,7 +6,7 @@ class LatexConvertable:
         pass
 
     def to_latex(self):
-        pass
+        raise NotImplementedError
 
 
         
