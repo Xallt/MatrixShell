@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-import numpy
 from cmd import Cmd
 from latex.latex_convertable import LatexConvertable
+from matrix.matrix import Matrix
 from termcolor import cprint
 
 class MatrixCmd(Cmd):
@@ -16,7 +16,11 @@ class MatrixCmd(Cmd):
         print("Bye")
         return True
     def help_exit(self):
-        print("Exit the application")
+        print(
+            "exit\n\n"
+            "Exit the application\n",
+            sep = '\n'
+        )
     do_EOF = do_exit
     help_EOF = help_exit
 
@@ -87,8 +91,9 @@ class MatrixCmd(Cmd):
                 assert len(row) == columns
             except:
                 cprint("%s integers expected, try again" % columns, "red")
+                continue
             matrix.append(row)
-        self.matrices[name] = numpy.array(matrix)
+        self.matrices[name] = Matrix(matrix)
 
     def do_read(self, line):
         inp = line.split()
@@ -110,13 +115,22 @@ class MatrixCmd(Cmd):
         self.read_matrix(name, rows, columns)
     def help_read(self):
         print(
-            "read NAME AxB",
-            "\tNAME - name of the matrix (valid python identifier)",
-            "\tA, B - matrix rows and columns",
-            sep="\n"
+            "read NAME AxB\n"
+            "\tNAME - name of the matrix (valid python identifier)\n"
+            "\tA, B - matrix rows and columns\n\n"
+            "Read the matrix from input\n"
         )
 
-        
+    def do_latex(self, name):
+        if not MatrixCmd.count_check(name.split(), 1):
+            return
+        print(self.matrices[name].to_latex())
+    def help_latex(self):
+        print(
+            "latex NAME\n"
+            "\tNAME - name of the matrix\n\n"
+            "Print matrix converted to LaTeX\n"
+        )
 
 if __name__ == '__main__':
     MatrixCmd().cmdloop()
