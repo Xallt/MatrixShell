@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import numpy
 from cmd import Cmd
 from latex.latex_convertable import LatexConvertable
 from termcolor import cprint
@@ -74,7 +75,20 @@ class MatrixCmd(Cmd):
         :columns: number of columns
 
         """
-        raise NotImplementedError
+        matrix = []
+        while len(matrix) < rows:
+            try:
+                inp = input().split()
+            except EOFError:
+                return
+
+            try:
+                row = list(map(int, inp))
+                assert len(row) == columns
+            except:
+                cprint("%s integers expected, try again" % columns, "red")
+            matrix.append(row)
+        self.matrices[name] = numpy.array(matrix)
 
     def do_read(self, line):
         inp = line.split()
@@ -93,7 +107,16 @@ class MatrixCmd(Cmd):
         rows, columns = int(shape[0]), int(shape[1])
 
         """ Reading the matrix after all conditions are checked """
-        self.read_matrix()
+        self.read_matrix(name, rows, columns)
+    def help_read(self):
+        print(
+            "read NAME AxB",
+            "\tNAME - name of the matrix (valid python identifier)",
+            "\tA, B - matrix rows and columns",
+            sep="\n"
+        )
+
+        
 
 if __name__ == '__main__':
     MatrixCmd().cmdloop()
