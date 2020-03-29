@@ -6,9 +6,10 @@ from termcolor import cprint
 
 class MatrixCmd(Cmd):
     prompt = "matrixsh> "
-    intro = """Welcome to the Matrix Shell!
-    Manipulate matrices and translate them to LaTeX
-    Type ? to list commands"""
+    intro = \
+    "Welcome to the Matrix Shell!\n" \
+    "Manipulate matrices and translate them to LaTeX\n" \
+    "Type ? to list commands\n"
 
     matrices = dict()
 
