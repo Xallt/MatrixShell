@@ -5,8 +5,8 @@ class Matrix(LatexConvertable):
 
     """ numpy.array wrapper for common operations """
 
-    def __init__(self, rows, columns):
-        self.array = numpy.zeros((rows, columns))
+    def __init__(self, matrix):
+        self.array = numpy.array(matrix)
 
     @property
     def rows(self):
