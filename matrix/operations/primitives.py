@@ -1,7 +1,6 @@
 from latex.latex_convertable import LatexConvertable
 from matrix.operations.matrix_operation import MatrixOperation
 
-
 class MultiplyRow(MatrixOperation):
 
     """ Primitive operation for multiplying a row of a matrix by a constant """
@@ -34,6 +33,7 @@ class AddRowToRow(MatrixOperation):
     """ Primitive operation for adding one row multiplied by a constant to another """
 
     def __init__(self, row1, row2, koefficient):
+        assert row1 != row2, "Cant row to itself"
         self.row1 = row1
         self.row2 = row2
         self.koefficient = koefficient
