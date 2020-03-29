@@ -1,4 +1,5 @@
 import numpy
+from latex.latex_convertable import LatexConvertable
 
 class Matrix(LatexConvertable):
 

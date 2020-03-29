@@ -1,3 +1,5 @@
+from latex.latex_convertable import LatexConvertable
+
 class MatrixOperation(LatexConvertable):
 
     """ Interface for primitive matrix operations """
