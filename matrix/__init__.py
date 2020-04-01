@@ -29,6 +29,6 @@ class Matrix(LatexConvertable):
             array_str += line
         return \
             command("left" + self.left) + \
-            begin_end(array_str, "array", 'c' * self.array.shape[1]) + \
+            begin_end(array_str, "array", 'c' * self.array.shape[1]).rstrip('\n') + \
             command("right" + self.right)
 
