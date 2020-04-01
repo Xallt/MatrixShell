@@ -25,7 +25,7 @@ class Matrix(LatexConvertable):
     def to_latex(self):
         array_str = ""
         for row in self.array:
-            line = '&'.join([str(el) for el in row]) + "\n"
+            line = '&'.join([str(el) for el in row]) + "\\\\\n"
             array_str += line
         return \
             command("left" + self.left) + \

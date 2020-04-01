@@ -21,9 +21,7 @@ def begin_end(block, block_type, param = None):
     :returns: Result LaTeX string
 
     """
-    lines = block.strip('\n').split('\n')
-    lines = ['\t' + line for line in lines]
     return \
         command("begin", block_type, param) + '\n' + \
-        '\n'.join(lines) + '\n' + \
+        block.strip('\n') + '\n' + \
         command("end", block_type)  + '\n'

@@ -6,6 +6,9 @@ from matrix import Matrix
 from termcolor import cprint
 from pyperclip import copy
 
+class ArgumentError(Exception):
+    pass
+
 class MatrixShell(Cmd):
     prompt = "matrixsh> "
     intro = \
@@ -27,55 +30,71 @@ class MatrixShell(Cmd):
     do_EOF = do_exit
     help_EOF = help_exit
 
-    @staticmethod
-    def lower_count_check(args, count, message = None):
+    def lower_count_check(self, args, count, message = None):
         """
+        Checks if len(args) < count
 
         :args: argument list
         :count: required count
-        :returns: True if len(args) < count, prints an error and returns False otherwise
 
         """
-        if message is None:
-            message = "Not enough arguments"
+        message = "Not enough arguments" if message is None else message
         if len(args) < count:
-            cprint(message, "red")
-            return False
-        return True
-    @staticmethod
-    def upper_count_check(args, count, message = None):
+            raise ArgumentError(message)
+    def upper_count_check(self, args, count, message = None):
         """
+        Check if len(args) > count
 
         :args: argument list
         :count: required count
-        :message: the error message
-        :returns: True if len(args) > count, prints an error and returns False otherwise
 
         """
-        if message is None:
-            message = "Too many arguments"
+        message = "Too many arguments" if message is None else message
         if len(args) > count:
-            cprint(message, "red")
-            return False
-        return True
-    @staticmethod
-    def count_check(args, count, message = None):
+            raise ArgumentError(message)
+    def count_check(self, args, count, message = None):
         """
+        Checks if len(args) == count
 
         :args: argument list
         :count: required count
-        :returns: True if len(args) == count, prints an error and returns False otherwise
 
         """
-        if not MatrixShell.lower_count_check(args, count, message):
-            return False
-        if not MatrixShell.upper_count_check(args, count, message):
-            return False
-        return True
+        self.lower_count_check(args, count, message)
+        self.upper_count_check(args, count, message)
 
+    def get_name(self, args, check_in_matrices = True):
+        """
+
+        :args: command arguments
+        :returns: (name, new args)
+
+        """
+
+        self.lower_count_check(args, 1)
+
+        return (args[0], args[1:])
+    def to_types(self, args, types):
+        """
+        Check that arguments fit a particular type
+
+        :args: elements to check
+        :types: types to typecheck args for
+
+        """
+
+        self.count_check(args, len(types))
+        result = []
+        for i in range(len(args)):
+            try:
+                result.append(types[i](args[i]))
+            except:
+                raise ArgumentError("Expected type %s at argument %i" % (str(types[i]), i + 1))
+        return result
 
     def read_matrix(self, name, rows, columns):
         """
+        Read matrix from input line by line
 
         :name: identifier assigned to the matrix
         :rows: number of rows
@@ -97,20 +116,21 @@ class MatrixShell(Cmd):
                 continue
             matrix.append(row)
         self.matrices[name] = np.array(matrix)
-
     def do_read(self, line):
-        inp = line.split()
-        if not MatrixShell.count_check(inp, 2):
-            return
-        name = inp[0].strip()
-        if not name.isidentifier():
-            cprint("The variable name must be a valid identifier", "red")
-            return
-        shape = inp[1].split('x')
-        if not MatrixShell.count_check(shape, 2, "Shape string must fit the format AxB"):
-            return
-        if not (shape[0].isdigit() and shape[1].isdigit()):
-            cprint("Non-integers found", "red")
+        args = line.split()
+        try:
+            name, args = self.get_name(args, False)
+            if not name.isidentifier():
+                raise ArgumentError("The variable name must be a valid identifier")
+            self.count_check(args, 1)
+            shape = args[0].split('x')
+            self.count_check(shape, 2, "Shape string must fit the format AxB")
+            if not (shape[0].isdigit() and shape[1].isdigit()):
+                raise ArgumentError("Non-integers in shape")
+            shape = int(shape[0]), int(shape[1])
+            assert shape[0] > 0 and shape[1] > 0, "Shape must be positive numbers"
+        except ArgumentError as e:
+            cprint(e, "red")
             return
         rows, columns = int(shape[0]), int(shape[1])
 
@@ -124,9 +144,9 @@ class MatrixShell(Cmd):
             "Read the matrix from input\n"
         )
 
-    def do_latex(self, name):
-        if not MatrixShell.count_check(name.split(), 1):
-            return
+    def do_latex(self, line):
+        name, args = self.get_name(line.split())
+        self.count_check(args, 0)
         print(Matrix(self.matrices[name]).to_latex())
     def help_latex(self):
         print(
@@ -135,9 +155,9 @@ class MatrixShell(Cmd):
             "Print matrix converted to LaTeX\n"
         )
 
-    def do_copy(self, name):
-        if not MatrixShell.count_check(name.split(), 1):
-            return
+    def do_copy(self, line):
+        name, args = self.get_name(line.split())
+        self.count_check(args, 0)
         copy(Matrix(self.matrices[name]).to_latex())
     def help_copy(self):
         print(
@@ -146,9 +166,9 @@ class MatrixShell(Cmd):
             "Copy matrix converted to LaTeX\n"
         )
 
-    def do_show(self, name):
-        if not MatrixShell.count_check(name.split(), 1):
-            return
+    def do_show(self, line):
+        name, args = self.get_name(line.split())
+        self.count_check(args, 0)
         for row in self.matrices[name]:
             print(("{:4}" * len(row)).format(*row))
     def help_show(self):
