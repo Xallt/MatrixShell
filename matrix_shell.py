@@ -1,8 +1,10 @@
 #!/usr/bin/env python
+import numpy as np
 from cmd import Cmd
 from latex.latex_convertable import LatexConvertable
 from matrix import Matrix
 from termcolor import cprint
+from pyperclip import copy
 
 class MatrixShell(Cmd):
     prompt = "matrixsh> "
@@ -94,7 +96,7 @@ class MatrixShell(Cmd):
                 cprint("%s integers expected, try again" % columns, "red")
                 continue
             matrix.append(row)
-        self.matrices[name] = Matrix(matrix)
+        self.matrices[name] = np.array(matrix)
 
     def do_read(self, line):
         inp = line.split()
@@ -125,12 +127,35 @@ class MatrixShell(Cmd):
     def do_latex(self, name):
         if not MatrixShell.count_check(name.split(), 1):
             return
-        print(self.matrices[name].to_latex())
+        print(Matrix(self.matrices[name]).to_latex())
     def help_latex(self):
         print(
             "latex NAME\n"
             "\tNAME - name of the matrix\n\n"
             "Print matrix converted to LaTeX\n"
+        )
+
+    def do_copy(self, name):
+        if not MatrixShell.count_check(name.split(), 1):
+            return
+        copy(Matrix(self.matrices[name]).to_latex())
+    def help_copy(self):
+        print(
+            "copy NAME\n"
+            "\tNAME - name of the matrix\n\n"
+            "Copy matrix converted to LaTeX\n"
+        )
+
+    def do_show(self, name):
+        if not MatrixShell.count_check(name.split(), 1):
+            return
+        for row in self.matrices[name]:
+            print(("{:4}" * len(row)).format(*row))
+    def help_show(self):
+        print(
+            "show NAME\n"
+            "\tNAME - name of the matrix\n\n"
+            "Show contents of the matrix\n"
         )
 
 if __name__ == '__main__':
