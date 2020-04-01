@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from cmd import Cmd
 from latex.latex_convertable import LatexConvertable
-from matrix.matrix import Matrix
+from matrix import Matrix
 from termcolor import cprint
 
 class MatrixShell(Cmd):
