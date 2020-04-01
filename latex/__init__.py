@@ -8,8 +8,8 @@ def command(command, curly = None, square = None):
 
     """
 
-    curly_str = "" if param is None else "{%s}" % curly
-    square_str = "" if param is None else "[%s]" % square
+    curly_str = "" if curly is None else "{%s}" % curly
+    square_str = "" if square is None else "[%s]" % square
     return r"\%s%s%s" % (command, curly_str, square_str)
 
 def begin_end(block, block_type, param = None):
