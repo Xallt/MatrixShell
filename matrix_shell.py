@@ -6,9 +6,6 @@ from termcolor import cprint
 from pyperclip import copy
 from typing import List, Optional
 
-class ArgumentError(Exception):
-    pass
-
 class MatrixShell(Cmd):
     prompt = "matrixsh> "
     intro = \
@@ -44,7 +41,7 @@ class MatrixShell(Cmd):
         """
         message = "Not enough arguments" if message is None else message
         if len(args) < count:
-            raise ArgumentError(message)
+            raise ValueError(message)
     def upper_count_check(self, args: List[str], count: int, message: Optional[str] = None):
         """
         Check if len(args) > count
@@ -55,7 +52,7 @@ class MatrixShell(Cmd):
         """
         message = "Too many arguments" if message is None else message
         if len(args) > count:
-            raise ArgumentError(message)
+            raise ValueError(message)
     def count_check(self, args: List[str], count: int, message: Optional[str] = None):
         """
         Checks if len(args) == count
@@ -93,7 +90,7 @@ class MatrixShell(Cmd):
             try:
                 result.append(types[i](args[i]))
             except:
-                raise ArgumentError("Expected type %s at argument %i" % (str(types[i]), i + 1))
+                raise ValueError("Expected type %s at argument %i" % (str(types[i]), i + 1))
         return result
 
     def read_matrix(self, name: str, rows: int, columns: int):
@@ -125,15 +122,15 @@ class MatrixShell(Cmd):
         try:
             name, args = self.get_name(args, False)
             if not name.isidentifier():
-                raise ArgumentError("The variable name must be a valid identifier")
+                raise ValueError("The variable name must be a valid identifier")
             self.count_check(args, 1)
             shape = args[0].split('x')
             self.count_check(shape, 2, "Shape string must fit the format AxB")
             if not (shape[0].isdigit() and shape[1].isdigit()):
-                raise ArgumentError("Non-integers in shape")
+                raise ValueError("Non-integers in shape")
             shape = int(shape[0]), int(shape[1])
             assert shape[0] > 0 and shape[1] > 0, "Shape must be positive numbers"
-        except ArgumentError as e:
+        except ValueError as e:
             cprint(e, "red")
             return
         rows, columns = int(shape[0]), int(shape[1])
