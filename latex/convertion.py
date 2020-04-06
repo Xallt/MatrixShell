@@ -4,17 +4,23 @@ def matrix_to_latex(matrix, left = '(', right = ')'):
     """
     Convert a 2D array to a LaTeX string
 
-    :matrix: 
+    :matrix: 2D rectangular array
     :left, right: brackets
     :returns: LaTeX string
 
     """
-    array_str = ""
-    for row in self.array:
-        line = '&'.join([str(el) for el in row]) + "\\\\\n"
-        array_str += line
+    rows = len(matrix)
+    lines = []
+    for row in matrix:
+        lines.append(
+            '&'.join([str(el) for el in row]) + r"\\"
+        )
     return \
-        command("left" + self.left) + \
-        begin_end(array_str, "array", 'c' * self.array.shape[1]).rstrip('\n') + \
-        command("right" + self.right)
+        command("left" + left) + \
+        begin_end(
+            '\n'.join(lines), 
+            "array", 
+            'c' * matrix.shape[1]
+        ).rstrip('\n') + \
+        command("right" + right)
 

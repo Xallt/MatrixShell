@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 import numpy as np
 from cmd import Cmd
-from latex.latex_convertable import LatexConvertable
-from matrix import Matrix
+from latex.convertion import matrix_to_latex
 from termcolor import cprint
 from pyperclip import copy
 from typing import List, Optional
@@ -152,7 +151,7 @@ class MatrixShell(Cmd):
     def do_latex(self, line):
         name, args = self.get_name(line.split())
         self.count_check(args, 0)
-        print(Matrix(self.matrices[name]).to_latex())
+        print(matrix_to_latex(self.matrices[name]))
     def help_latex(self):
         print(
             "latex NAME\n"
@@ -163,7 +162,7 @@ class MatrixShell(Cmd):
     def do_copy(self, line):
         name, args = self.get_name(line.split())
         self.count_check(args, 0)
-        copy(Matrix(self.matrices[name]).to_latex())
+        copy(matrix_to_latex(self.matrices[name]))
     def help_copy(self):
         print(
             "copy NAME\n"
