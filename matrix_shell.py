@@ -5,6 +5,7 @@ from latex.latex_convertable import LatexConvertable
 from matrix import Matrix
 from termcolor import cprint
 from pyperclip import copy
+from typing import List, Optional
 
 class ArgumentError(Exception):
     pass
@@ -18,6 +19,10 @@ class MatrixShell(Cmd):
 
     matrices = dict()
 
+    def __init__(self, stdin = None, stdout = None):
+        Cmd.__init__(self, stdin = stdin, stdout = stdout)
+        
+
     def do_exit(self, inp):
         print("Bye")
         return True
@@ -30,7 +35,7 @@ class MatrixShell(Cmd):
     do_EOF = do_exit
     help_EOF = help_exit
 
-    def lower_count_check(self, args, count, message = None):
+    def lower_count_check(self, args: List[str], count: int, message: Optional[str] = None):
         """
         Checks if len(args) < count
 
@@ -41,7 +46,7 @@ class MatrixShell(Cmd):
         message = "Not enough arguments" if message is None else message
         if len(args) < count:
             raise ArgumentError(message)
-    def upper_count_check(self, args, count, message = None):
+    def upper_count_check(self, args: List[str], count: int, message: Optional[str] = None):
         """
         Check if len(args) > count
 
@@ -52,7 +57,7 @@ class MatrixShell(Cmd):
         message = "Too many arguments" if message is None else message
         if len(args) > count:
             raise ArgumentError(message)
-    def count_check(self, args, count, message = None):
+    def count_check(self, args: List[str], count: int, message: Optional[str] = None):
         """
         Checks if len(args) == count
 
@@ -63,7 +68,7 @@ class MatrixShell(Cmd):
         self.lower_count_check(args, count, message)
         self.upper_count_check(args, count, message)
 
-    def get_name(self, args, check_in_matrices = True):
+    def get_name(self, args: List[str], check_in_matrices: bool = True):
         """
 
         :args: command arguments
@@ -74,7 +79,7 @@ class MatrixShell(Cmd):
         self.lower_count_check(args, 1)
 
         return (args[0], args[1:])
-    def to_types(self, args, types):
+    def to_types(self, args: List[str], types: List[type]):
         """
         Check that arguments fit a particular type
 
@@ -92,7 +97,7 @@ class MatrixShell(Cmd):
                 raise ArgumentError("Expected type %s at argument %i" % (str(types[i]), i + 1))
         return result
 
-    def read_matrix(self, name, rows, columns):
+    def read_matrix(self, name: str, rows: int, columns: int):
         """
         Read matrix from input line by line
 
