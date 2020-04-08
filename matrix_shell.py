@@ -4,7 +4,7 @@ from cmd import Cmd
 from latex.convertion import matrix_to_latex
 from termcolor import colored
 from pyperclip import copy
-from typing import List, Optional
+from typing import List, Optional, Any
 
 class MatrixShell(Cmd):
     prompt = "matrixsh> "
@@ -32,7 +32,7 @@ class MatrixShell(Cmd):
     do_EOF = do_exit
     help_EOF = help_exit
 
-    def print(self, *args, **kwargs):
+    def print(self, *args, **kwargs) -> None:
         """
         Print to specified stdout
 
@@ -40,7 +40,7 @@ class MatrixShell(Cmd):
 
         """
         print(*args, **kwargs, file = self.stdout)
-    def cprint(self, s, color):
+    def cprint(self, s: str, color) -> None:
         """
         Print colored string to specified stdout
 
@@ -49,7 +49,7 @@ class MatrixShell(Cmd):
 
         """
         print(colored(s, color), file = self.stdout)
-    def lower_count_check(self, args: List[str], count: int, message: Optional[str] = None):
+    def lower_count_check(self, args: List[str], count: int, message: Optional[str] = None) -> None:
         """
         Checks if len(args) < count
 
@@ -60,7 +60,7 @@ class MatrixShell(Cmd):
         message = "Not enough arguments" if message is None else message
         if len(args) < count:
             raise ValueError(message)
-    def upper_count_check(self, args: List[str], count: int, message: Optional[str] = None):
+    def upper_count_check(self, args: List[str], count: int, message: Optional[str] = None) -> None:
         """
         Check if len(args) > count
 
@@ -71,7 +71,7 @@ class MatrixShell(Cmd):
         message = "Too many arguments" if message is None else message
         if len(args) > count:
             raise ValueError(message)
-    def count_check(self, args: List[str], count: int, message: Optional[str] = None):
+    def count_check(self, args: List[str], count: int, message: Optional[str] = None) -> None:
         """
         Checks if len(args) == count
 
@@ -82,7 +82,7 @@ class MatrixShell(Cmd):
         self.lower_count_check(args, count, message)
         self.upper_count_check(args, count, message)
 
-    def get_name(self, args: List[str], check_in_matrices: bool = True):
+    def get_name(self, args: List[str], check_in_matrices: bool = True) -> List[str]:
         """
 
         :args: command arguments
@@ -93,7 +93,7 @@ class MatrixShell(Cmd):
         self.lower_count_check(args, 1)
 
         return (args[0], args[1:])
-    def to_types(self, args: List[str], types: List[type]):
+    def to_types(self, args: List[str], types: List[type]) -> List[Any]:
         """
         Check that arguments fit a particular type
 
@@ -111,7 +111,7 @@ class MatrixShell(Cmd):
                 raise ValueError("Expected type %s at argument %i" % (str(types[i]), i + 1))
         return result
 
-    def read_matrix(self, name: str, rows: int, columns: int):
+    def read_matrix(self, name: str, rows: int, columns: int) -> None:
         """
         Read matrix from input line by line
 

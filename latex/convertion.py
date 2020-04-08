@@ -1,6 +1,8 @@
 from latex import begin_end, command
+from typing import List, TypeVar
 
-def matrix_to_latex(matrix, left = '(', right = ')'):
+T = TypeVar('T')
+def matrix_to_latex(matrix: List[List[T]], left = '(', right = ')') -> str:
     """
     Convert a 2D array to a LaTeX string
 

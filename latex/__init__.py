@@ -1,4 +1,4 @@
-def command(command, curly = None, square = None):
+def command(command: str, curly: str = None, square:str = None) -> str:
     """
 
     :command: command name
@@ -12,7 +12,7 @@ def command(command, curly = None, square = None):
     square_str = "" if square is None else "[%s]" % square
     return r"\%s%s%s" % (command, curly_str, square_str)
 
-def begin_end(block, block_type, param = None):
+def begin_end(block:str, block_type:str, param:str = None) -> str:
     """
 
     :block: Block of LaTeX to put inside \\begin ... \\end
