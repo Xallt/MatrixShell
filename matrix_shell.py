@@ -2,7 +2,7 @@
 import numpy as np
 from cmd import Cmd
 from latex.convertion import matrix_to_latex
-from termcolor import cprint
+from termcolor import colored
 from pyperclip import copy
 from typing import List, Optional
 
@@ -16,14 +16,15 @@ class MatrixShell(Cmd):
     matrices = dict()
 
     def __init__(self, stdin = None, stdout = None):
-        Cmd.__init__(self, stdin = stdin, stdout = stdout)
-        
+        super(MatrixShell, self).__init__(stdin = stdin, stdout = stdout)
+        if stdin is not None:
+            self.use_rawinput = False
 
     def do_exit(self, inp):
-        print("Bye")
+        self.print("Bye")
         return True
     def help_exit(self):
-        print(
+        self.print(
             "exit\n\n"
             "Exit the application\n",
             sep = '\n'
@@ -31,6 +32,23 @@ class MatrixShell(Cmd):
     do_EOF = do_exit
     help_EOF = help_exit
 
+    def print(self, *args, **kwargs):
+        """
+        Print to specified stdout
+
+        :args: strings
+
+        """
+        print(*args, **kwargs, file = self.stdout)
+    def cprint(self, s, color):
+        """
+        Print colored string to specified stdout
+
+        :s: string
+        :s: color
+
+        """
+        print(colored(s, color), file = self.stdout)
     def lower_count_check(self, args: List[str], count: int, message: Optional[str] = None):
         """
         Checks if len(args) < count
@@ -105,7 +123,10 @@ class MatrixShell(Cmd):
         matrix = []
         while len(matrix) < rows:
             try:
-                inp = input().split()
+                if self.use_rawinput:
+                    inp = input().split()
+                else:
+                    inp = self.stdin.readline().split()
             except EOFError:
                 return
 
@@ -113,7 +134,7 @@ class MatrixShell(Cmd):
                 row = list(map(int, inp))
                 assert len(row) == columns
             except:
-                cprint("%s integers expected, try again" % columns, "red")
+                self.cprint("%s integers expected, try again" % columns, "red")
                 continue
             matrix.append(row)
         self.matrices[name] = np.array(matrix)
@@ -131,14 +152,14 @@ class MatrixShell(Cmd):
             shape = int(shape[0]), int(shape[1])
             assert shape[0] > 0 and shape[1] > 0, "Shape must be positive numbers"
         except ValueError as e:
-            cprint(e, "red")
+            self.cprint(e, "red")
             return
         rows, columns = int(shape[0]), int(shape[1])
 
         """ Reading the matrix after all conditions are checked """
         self.read_matrix(name, rows, columns)
     def help_read(self):
-        print(
+        self.print(
             "read NAME AxB\n"
             "\tNAME - name of the matrix (valid python identifier)\n"
             "\tA, B - matrix rows and columns\n\n"
@@ -148,9 +169,9 @@ class MatrixShell(Cmd):
     def do_latex(self, line):
         name, args = self.get_name(line.split())
         self.count_check(args, 0)
-        print(matrix_to_latex(self.matrices[name]))
+        self.print(matrix_to_latex(self.matrices[name]))
     def help_latex(self):
-        print(
+        self.print(
             "latex NAME\n"
             "\tNAME - name of the matrix\n\n"
             "Print matrix converted to LaTeX\n"
@@ -161,7 +182,7 @@ class MatrixShell(Cmd):
         self.count_check(args, 0)
         copy(matrix_to_latex(self.matrices[name]))
     def help_copy(self):
-        print(
+        self.print(
             "copy NAME\n"
             "\tNAME - name of the matrix\n\n"
             "Copy matrix converted to LaTeX\n"
@@ -171,9 +192,9 @@ class MatrixShell(Cmd):
         name, args = self.get_name(line.split())
         self.count_check(args, 0)
         for row in self.matrices[name]:
-            print(("{:4}" * len(row)).format(*row))
+           self.print(("{:4}" * len(row)).format(*row))
     def help_show(self):
-        print(
+        self.print(
             "show NAME\n"
             "\tNAME - name of the matrix\n\n"
             "Show contents of the matrix\n"
