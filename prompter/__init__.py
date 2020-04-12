@@ -46,6 +46,6 @@ class Prompter:
             except EOFError:
                 ok_flag = self.on_eof()
             self.post_prompt()
-            if not ok_flag:
+            if ok_flag is not None and not ok_flag:
                 self.print(self.outro)
                 break
