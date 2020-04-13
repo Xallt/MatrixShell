@@ -1,3 +1,5 @@
+from termcolor import colored
+
 class Prompter:
 
     """ My Cmd class for preprocessing the Python interpreter"""
@@ -19,6 +21,16 @@ class Prompter:
         """ Print to specified stdout """
 
         print(*args, **kwargs, file = self.stdout)
+    def cprint(self, *args, **kwargs, color = None)
+        """ Print colored text to specified stdout """
+
+        self.print(*[colored(text, color) for text in args], **kwargs)
+    def warning(self, *args, **kwargs):
+        """ Print yellow-colored message """
+        self.cprint(*args, **kwargs, color = "yellow")
+    def error(self, *args, **kwargs):
+        """ Print yellow-colored message """
+        self.cprint(*args, **kwargs, color = "red")
 
     def prompt_input(self):
         """ Get input from user using specified prompt """
