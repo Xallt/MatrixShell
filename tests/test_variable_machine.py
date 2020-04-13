@@ -26,4 +26,8 @@ class TestVariableMachine(unittest.TestCase):
         self.machine.assign("a", "1 + 1 + 1 + 2 * 0")
         self.machine.assign("a", "a * 2 + 2 ** a-1")
         self.assertEqual(self.machine.get("a"), 3 * 2 + 2 ** 3 - 1)
+    def test_exceptions(self):
+        self.assertRaises(ValueError, self.machine.assign, "1a", "1")
+        self.machine.assign("a", "1")
+        self.assertRaises(NameError, self.machine.assign, "a", "b")
     
