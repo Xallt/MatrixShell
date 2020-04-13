@@ -21,7 +21,7 @@ class Prompter:
         """ Print to specified stdout """
 
         print(*args, **kwargs, file = self.stdout)
-    def cprint(self, *args, color = None, **kwargs)
+    def cprint(self, *args, color = None, **kwargs):
         """ Print colored text to specified stdout """
 
         self.print(*[colored(text, color) for text in args], **kwargs)
