@@ -47,7 +47,16 @@ class MatrixShell(Prompter):
         self.matrices[name] = np.array(matrix)
 
     def show_expression(self, expression: str) -> None:
-        self.print(self.machine.eval(expression))
+        try:
+            eval_result = self.machine.eval(expression)
+            self.print(self.machine.eval(expression))
+        except (ValueError, NameError, SyntaxError) as e:
+            self.error(e)
+    def assign(self, name: str, expression: str) -> None:
+        try:
+            self.machine.assign(name, expression)
+        except (ValueError, NameError, SyntaxError) as e:
+            self.error(e)
     def on_prompt(self, line) -> bool:
         line = line.replace(' ', '')
         first_e = line.find('=')
@@ -56,7 +65,7 @@ class MatrixShell(Prompter):
         else:
             name = line[:first_e]
             expression = line[first_e + 1:]
-            self.machine.assign(name, expression)
+            self.assign(name, expression)
 
     def show_matrix(self, line):
         name, args = self.get_name(line.split())
