@@ -6,6 +6,7 @@ from termcolor import colored
 from pyperclip import copy
 from typing import List, Optional, Any
 from fractions import Fraction
+from variable_machine import VariableMachine
 
 class MatrixShell(Prompter):
 
@@ -15,6 +16,7 @@ class MatrixShell(Prompter):
         super(MatrixShell, self).__init__(stdin = stdin, stdout = stdout)
         self.prompt = ">>> "
         self.intro = "Welcome to the Matrix Shell!\n"
+        self.machine = VariableMachine()
 
     def read_matrix(self, name: str, rows: int, columns: int, elem_type: type = Fraction) -> None:
         """
@@ -44,8 +46,17 @@ class MatrixShell(Prompter):
             matrix.append(row)
         self.matrices[name] = np.array(matrix)
 
+    def show_expression(self, expression: str) -> None:
+        self.print(self.machine.eval(expression))
     def on_prompt(self, line) -> bool:
-        self.print("Processed " + line)
+        line = line.replace(' ', '')
+        first_e = line.find('=')
+        if first_e == -1:
+            self.show_expression(line)
+        else:
+            name = line[:first_e]
+            expression = line[first_e + 1:]
+            self.machine.assign(name, expression)
 
     def show_matrix(self, line):
         name, args = self.get_name(line.split())
