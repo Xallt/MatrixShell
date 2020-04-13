@@ -31,10 +31,13 @@ class VariableMachine:
         return eval(processed_expression)
     def assign(self, name: str, expression: str) -> None:
         """ Assign result of expression to a variable with a given name """
-
+        if not VariableMachine.is_identifier(name):
+            raise ValueError("name %s is not a valid identifier" % name)
         self.var[name] = self.eval(expression)
     def get(self, name: str) -> Any:
         """ Get stored variable """
+        if not name in self.var:
+            raise NameError("name %s is not defined in current VariableMachine")
 
         return self.var[name]
         
