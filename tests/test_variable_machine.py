@@ -9,8 +9,8 @@ class TestVariableMachine(unittest.TestCase):
 
     def test_translation(self):
         self.assertEqual(
-            self.machine.names_to_dict("a = b + c", "d"), 
-            "d[\"a\"] = d[\"b\"] + d[\"c\"]"
+            self.machine.names_to_dict("a - b + c", ["a", "b"], "d"), 
+            "d[\"a\"] - d[\"b\"] + c"
         )
     def test_identifier(self):
         self.assertTrue(
