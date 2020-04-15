@@ -58,12 +58,11 @@ class MatrixShell(Prompter):
         except (ValueError, NameError, SyntaxError) as e:
             self.error(e)
     def on_prompt(self, line) -> bool:
-        line = line.replace(' ', '')
         first_e = line.find('=')
         if first_e == -1:
             self.show_expression(line)
         else:
-            name = line[:first_e]
+            name = line[:first_e].strip(' ')
             expression = line[first_e + 1:]
             self.assign(name, expression)
 
