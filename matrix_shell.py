@@ -50,13 +50,18 @@ class MatrixShell(Prompter):
         try:
             eval_result = self.machine.eval(expression)
             self.print(self.machine.eval(expression))
-        except (ValueError, NameError, SyntaxError) as e:
+        except (NameError, SyntaxError) as e:
             self.error(e)
     def assign(self, name: str, expression: str) -> None:
+        if not self.machine.is_identifier(name):
+            self.error("%s is not a valid identifier" % name)
+            return
         try:
-            self.machine.assign(name, expression)
-        except (ValueError, NameError, SyntaxError) as e:
+            result = self.machine.eval(expression)
+        except (NameError, SyntaxError) as e:
             self.error(e)
+            return
+        self.machine.assign(name, result)
     def on_prompt(self, line) -> bool:
         first_e = line.find('=')
         if first_e == -1:
