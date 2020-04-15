@@ -19,7 +19,7 @@ class VariableMachine:
         """ Replace variable names in expression with references to values in dict """
         if len(names) == 0:
             return expression
-        pattern = r"(?!<=[a-zA-Z_0-9])(%s)(?!=[a-zA-Z_0-9])" % '|'.join(names)
+        pattern = r"(?<![a-zA-Z_0-9])(%s)(?![a-zA-Z_0-9])" % '|'.join(names)
         return re.sub(pattern, "%s[\"\\1\"]" % dict_name, expression)
 
     def names(self):
@@ -29,11 +29,11 @@ class VariableMachine:
         """ Evaluate the expression using the variables in this machine """
         processed_expression = VariableMachine.names_to_dict(expression, self.names(), "self.var")
         return eval(processed_expression)
-    def assign(self, name: str, expression: str) -> None:
+    def assign(self, name: str, value: Any) -> None:
         """ Assign result of expression to a variable with a given name """
         if not VariableMachine.is_identifier(name):
             raise ValueError("name '%s' is not a valid identifier" % name)
-        self.var[name] = self.eval(expression)
+        self.var[name] = value
     def get(self, name: str) -> Any:
         """ Get stored variable """
         if not name in self.var:
